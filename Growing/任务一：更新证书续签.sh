@@ -38,3 +38,40 @@ else
                 echo "无需更新"
                 #最小有效期满足要求，无需更新。
 fi
+
+第三版
+#! /usr/bin/bash
+##########################################
+# Function: 延长组件证书有效期           #
+# Author: DingHang                       #
+# CreateTime: 2021/9/27                  #
+##########################################
+
+set -o nounset
+set -o errexit
+#Sed -i 's/\r//' clear_sshd_process.sh  format the script.
+
+# Export the LANG environment.
+vOsType=$(uname | tr '[a-z]' '[A-Z]')
+if [ "${vOsType}" = "AIX" -o "${vOsType}" = "LINUX" ];then
+	export LANG=es_US.utf8
+fi
+
+T=$1
+#输入最低有效期天数
+MINI_TIME=$(kubeadm alpha certs check-expiration | grep -n -A9 'admin' | awk '{print $7}' | sed 's/.$'// | awk 'NR==1{min=$1;next}{min=min<$1?min:$1}END{print min}')
+#在各组件的剩余天数取最小的有效期
+if [ $MINI_TIME -lt $T ]
+        then
+                kubeadm alpha certs renew all
+                #最小有效期低于要求时更新组件有效期
+                if [ $? -eq 0 ]
+                #判断上一步更新是否成功
+        then
+                echo "更新成功"
+        #更新完成后提示更新成功
+fi
+else
+                echo "无需更新"
+                #最小有效期满足要求，无需更新。
+fi
