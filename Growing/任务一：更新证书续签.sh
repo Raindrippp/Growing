@@ -1,5 +1,4 @@
 第一版
-
 #! /usr/bin/bash
 
 t=$1
