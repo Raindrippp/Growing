@@ -128,6 +128,34 @@ class getdocker:
             return None
         finally:
             pass
+        
+       
+    def get_docker_container_top(cls):
+        try:
+            process_list = []
+            results_set = cls.CLIENT.containers.list()
+            for item in results_set:
+                container_id = item.id
+                container_t = cls.CLIENT.containers.get(container_id)
+                process_set = container_t.top()['Processes']
+                for item2 in process_set:
+                    process_UID = item2[0]
+                    process_PID = item2[1]
+                    process_PPID = item2[2]
+                    process_dict = OrderedDict({
+                        'UID': process_UID,
+                        'PID': process_PID,
+                        'PPID': process_PPID,
+                    })
+                    process_list.append(process_dict)
+            return process_list
+        except Exception as e:
+            logging.error(f'获取容器信息失败,错误信息{e}')
+            return None
+
+        finally:
+            pass
+
 
 
 platform1 = getplatform()
