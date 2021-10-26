@@ -129,23 +129,7 @@ class getdocker:
         finally:
             pass
         
-       
-   from collections import OrderedDict
-import logging
-import docker
-
-
-class getdocker:
-    """
-
-    """
-    CLIENT = docker.from_env()
-
-    def __init__(self):
-        # 指定docker socket目录创建client
-        # self.client = docker.DockerClient(base_url='unix://var/run/docker.sock')
-        # 使用环境变量初始化client
-        pass
+    
 
     def get_docker_container_top(cls):
         try:
