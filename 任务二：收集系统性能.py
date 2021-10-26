@@ -130,11 +130,30 @@ class getdocker:
             pass
         
        
+   from collections import OrderedDict
+import logging
+import docker
+
+
+class getdocker:
+    """
+
+    """
+    CLIENT = docker.from_env()
+
+    def __init__(self):
+        # 指定docker socket目录创建client
+        # self.client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+        # 使用环境变量初始化client
+        pass
+
     def get_docker_container_top(cls):
         try:
-            process_list = []
+            process_list_all = []
+            process_dict11 = {}
             results_set = cls.CLIENT.containers.list()
             for item in results_set:
+                process_list = []
                 container_id = item.id
                 container_t = cls.CLIENT.containers.get(container_id)
                 process_set = container_t.top()['Processes']
@@ -142,19 +161,25 @@ class getdocker:
                     process_UID = item2[0]
                     process_PID = item2[1]
                     process_PPID = item2[2]
-                    process_dict = OrderedDict({
+                    process_dict = {
                         'UID': process_UID,
                         'PID': process_PID,
                         'PPID': process_PPID,
-                    })
+                    }
                     process_list.append(process_dict)
-            return process_list
+                    process_dict11[f"container_{container_id}"] = process_list
+            return process_dict11
         except Exception as e:
             logging.error(f'获取容器信息失败,错误信息{e}')
             return None
 
         finally:
             pass
+
+
+Docker = getdocker()
+print(Docker.get_docker_container_top())
+
 
 
 
@@ -164,3 +189,4 @@ print(platform1.get_os_all_info())
 Docker = getdocker()
 print(Docker.get_docker_all_info())
 print(Docker.get_docker_container_info())
+print(Docker.get_docker_container_top())
