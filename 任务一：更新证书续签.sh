@@ -7,7 +7,7 @@
 
 set -o nounset
 set -o errexit
-#Sed -i 's/\r//' clear_sshd_process.sh  format the script.
+#Sed -i 's/\r//'
 
 # Export the LANG environment.
 vOsType=$(uname | tr '[a-z]' '[A-Z]')
