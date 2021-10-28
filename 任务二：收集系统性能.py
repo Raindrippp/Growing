@@ -44,7 +44,7 @@ class getplatform:
                     'Processor': Processor
                 })
         except Exception as e:
-            logging.error(f'获取客户端信息失败,错误信息{e}')
+            logging.error(f'获取操作系统信息失败,错误信息{e}')
             return False
         finally:
             pass
@@ -94,7 +94,7 @@ class getdocker:
                 })
 
         except Exception as e:
-            logging.error(f'获取客户端信息失败,错误信息{e}')
+            logging.error(f'获取docker版本信息失败,错误信息{e}')
             return False
         finally:
             pass
