@@ -171,7 +171,6 @@ class getdocker:
         except Exception as e:
             logging.error(f'获取容器进程信息失败,错误信息{e}')
             return None
-
         finally:
             pass
         
@@ -200,13 +199,8 @@ class getdocker:
             pass
 
         
-        
-
-
-
 
 platform1 = getplatform()
-print(platform1.get_os_all_info())
-
 Docker = getdocker()
+print(platform1.get_os_all_info())
 Docker.docker_top_to_table()
