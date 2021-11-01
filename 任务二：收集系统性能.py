@@ -1,8 +1,11 @@
 import platform
-from collections import OrderedDict
 import logging
 import docker
+import socket
+from elasticsearch import Elasticsearch, helpers
+from collections import OrderedDict
 
+es = Elasticsearch()
 os = platform.system
 
 
@@ -159,10 +162,33 @@ class getdocker:
 
         finally:
             pass
+        
+       
+    def docker_top_to_table(cls):
+        try:
+            docker_top = cls.get_docker_container_top()
+            if docker_top and docker_top is not False:
+                date = docker_top
+                hostname = socket.gethostname()
+                for key, the_value in date.items():
+                    top_date = [{
+                        "_index": "process",
+                        "_hostname": hostname,
+                        "_name": key,
+                        "_USER": t['USER'],
+                        '_ID': t['ID'],
+                        '_PPID': t['PPID'],
+                        '_STIME': t['STIME'],
+                        '_TIME': t['TIME']
+                    } for t in the_value]
+                    helpers.bulk(es, top_date)
+        except Exception as e:
+            logging.error(f'docker进程信息写入失败,错误信息{e}')
+        finally:
+            pass
 
-
-Docker = getdocker()
-print(Docker.get_docker_container_top())
+        
+        
 
 
 
@@ -171,6 +197,4 @@ platform1 = getplatform()
 print(platform1.get_os_all_info())
 
 Docker = getdocker()
-print(Docker.get_docker_all_info())
-print(Docker.get_docker_container_info())
-print(Docker.get_docker_container_top())
+Docker.docker_top_to_table()
