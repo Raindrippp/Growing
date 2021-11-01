@@ -136,28 +136,40 @@ class getdocker:
 
     def get_docker_container_top(cls):
         try:
-            process_list_all = []
             process_dict11 = {}
             results_set = cls.CLIENT.containers.list()
             for item in results_set:
                 process_list = []
                 container_id = item.id
+                #获取容器ID
+                container_name = item.name
+                #获取容器名
                 container_t = cls.CLIENT.containers.get(container_id)
-                process_set = container_t.top()['Processes']
+                process_set = container_t.top()['Processes
+                #获取容器下进程信息
                 for item2 in process_set:
                     process_UID = item2[0]
+                    #获取进程UID
                     process_PID = item2[1]
+                    #获取进程PID                            
                     process_PPID = item2[2]
-                    process_dict = {
-                        'UID': process_UID,
-                        'PID': process_PID,
+                    #获取进程PPID
+                    process_STIME = item2[4]
+                    #获取进程STIME
+                    process_TIME = item2[6]
+                    #获取进程TIME
+                    process_dict = OrderedDict({
+                        'USER': process_UID,
+                        'ID': process_PID,
                         'PPID': process_PPID,
-                    }
+                        'STIME': process_STIME,
+                        'TIME': process_TIME,
+                    })
                     process_list.append(process_dict)
-                    process_dict11[f"container_{container_id}"] = process_list
+                    process_dict11[f"{container_name}"] = process_list
             return process_dict11
         except Exception as e:
-            logging.error(f'获取容器信息失败,错误信息{e}')
+            logging.error(f'获取容器进程信息失败,错误信息{e}')
             return None
 
         finally:
