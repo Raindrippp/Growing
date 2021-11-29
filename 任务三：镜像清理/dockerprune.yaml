@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dockerprune
+spec:
+  schedule: "30 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: dockerprune
+            image: test:latest
+            imagePullPolicy: Never
+            volumeMounts:
+              - name: dockersock
+                mountPath: /var/run/docker.sock
+              - name: log
+                mountPath: /log
+          volumes:
+            - name: dockersock
+              hostPath:
+                path: /var/run/docker.sock
+            - name: log
+              hostPath:
+                path: /test/workdir
+          restartPolicy: OnFailure
